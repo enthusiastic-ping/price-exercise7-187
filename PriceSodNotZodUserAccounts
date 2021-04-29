@@ -1,0 +1,201 @@
+//AUTHOR:		RICH PRICE
+//COURSE:		CPT187
+//PURPOSE:		This is a log of user accounts and passwords. Password validation occurs.
+//				User accounts will be loaded and updated here.
+//CREATEDATE:	4/17/2021
+
+package edu.cpt187.price.exercise6;
+
+//import classes
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+//begin supportive class
+public class UserAccounts 
+{
+	//constants
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+
+	//variables
+	private String [] userNames = new String [MAXIMUM_RECORDS]; 
+	private String [] passwords = new String [MAXIMUM_RECORDS];
+	private boolean fileFoundFlag = false; 
+	private String masterFileName = ""; 
+	private int recordCount = 0; 
+	private int searchedIndex = 0; 
+
+	//constructor
+	public UserAccounts (String borrowedFileName)
+	{
+		//assign borrowedFileName to masterFileName
+		masterFileName = borrowedFileName; 
+	}
+
+	//set user names and passwords to an array
+	public void setUserAccountArrays()
+	{
+		//try block
+		try
+		{
+			//open file and extract data
+			Scanner infile = new Scanner(new FileInputStream(masterFileName));
+
+			//reset recordCount
+			recordCount = RESET_VALUE;
+			
+			//while loop
+			while (infile.hasNext() == true && recordCount < MAXIMUM_RECORDS) 
+			{
+				//loop through file and assign each element to the specific array
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next(); 
+				//increment LCV
+				recordCount++;
+				
+			}//end while loop
+
+			//close file
+			infile.close();
+
+		}//end try
+
+		//error catch
+		catch (IOException ex)
+		{
+			// assign record count to -1 if file not found
+			recordCount = NOT_FOUND;
+			
+		}//end catch
+
+	}//end setter
+
+	//set searchedIndex
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		//assign the value from sequential search to searchedIndex
+		searchedIndex = getSeqSearch(borrowedUserName);
+		
+	}//end setter
+
+	//overloaded set searchedIndex
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)
+	{
+		//set the searchedIndex to the value returned from Sequence Search 
+		searchedIndex = getSeqSearch(borrowedUserName);
+
+		//if userName is not found
+		if(searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		}//end if 
+		
+	}//end setter
+
+	//write user details to file
+	public void setWriteOneRecord( String borrowedUserName, String borrowedPassword)
+	{
+		//try block
+		try
+		{
+
+			//instantiate FileWriter
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+
+			//write record
+			filePW.printf("%n%s\t%s\t", borrowedUserName, borrowedPassword);
+			fileFoundFlag = true;
+			
+			//increment LCV
+			recordCount ++;	
+			
+			//close file
+			filePW.close();
+
+		}//end try
+
+		//error catch
+		catch (IOException ex) 
+		{
+			fileFoundFlag = false;
+			
+		}//end catch
+
+	}//end setter
+
+	//get index position of data within a file
+	public int getSeqSearch(String borrowedborrowedUserName)
+	{
+		//local variables
+		int localIndex = 0;
+		int found = NOT_FOUND;
+
+		//while loop test userName is valid
+		while (localIndex < recordCount)
+		{
+			//Determine if userName is valid
+			if (borrowedborrowedUserName.equalsIgnoreCase(userNames[localIndex]))
+			{
+				//matching userName found
+				found = localIndex;
+				localIndex = recordCount;
+			}//end if
+			
+			else
+			{
+				//increment LCV
+				localIndex++;
+				
+			}//end else
+
+		}//End while loop
+
+		//return value to calling method
+		return found;
+
+	}//end setter
+
+	//get true or false if password matches 
+	public boolean getPasswordMatch(String borrowedborrowedPassword)
+	{
+		//return true or false if password found
+		return borrowedborrowedPassword.equals(passwords[searchedIndex]); 
+		
+	}//end getter
+
+	//get fileFoundFlag
+	public boolean getFileFoundFlag()
+	{
+		//return value to calling method
+		return fileFoundFlag;
+		
+	}//end getter
+
+	//get fileName
+	public String getFileName()
+	{
+		//return value to calling method
+		return masterFileName;
+		
+	}//end getter
+
+	//get recordCount
+	public int getRecordCount()
+	{
+		//return value to calling method
+		return recordCount;
+		
+	}//end getter
+
+	//get searchedIndex
+	public int getSearchedIndex()
+	{
+		//return value to calling method
+		return searchedIndex;
+	}//end getter
+
+}//end class
