@@ -1,0 +1,76 @@
+//AUTHOR:		RICH PRICE
+//COURSE:		CPT187
+//PURPOSE:		This is where orders are logged  and recorded.
+//				Writes orders when a new order is made and logs it for end of day report.
+//CREATEDATE:	4/17/2021
+
+package edu.cpt187.price.exercise6;
+
+//import classes
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+//begin supportive class
+public class WriteOrder 
+{
+	//variables
+	private boolean fileFoundFlag = false;
+	private String masterFileName = "";
+	private int recordCount = 0;
+
+	//constructor
+	public WriteOrder(String borrowedFileName)
+	{
+		//assign borrowedFileName to masterFileName
+		masterFileName = borrowedFileName; 
+	}
+
+	//write order details to a file
+	public void setWriteOrder(int borrowedItemID, String borrowedItemName, double borrowedItemPrice, 
+			int borrowedQuantity, double borrowedOrderCost)
+	{
+		
+		//try to write to file
+		try
+		{
+			//instantiate FileWriter
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+
+			//write a record
+			filePW.printf("%n%d\t%s\t%f\t%d\t%f\t", borrowedItemID, borrowedItemName, borrowedItemPrice, borrowedQuantity, borrowedOrderCost);
+			fileFoundFlag = true;
+			//close file
+			filePW.close();
+			//increment recordCount 
+			recordCount++; 
+
+		}//end try
+
+		//error catch
+		catch (IOException ex) 
+		{
+			fileFoundFlag = false;
+		}
+
+	}//end setter
+
+	//return whether the setWriteOrder file is found
+	public boolean getFileFoundFlag()
+	{
+		return fileFoundFlag;
+	}//end getter
+
+	//return master order file name variable
+	public String getFileName()
+	{
+		return masterFileName;
+	}//end getter
+
+	//return the number of records in the master order file
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//end getter
+	
+}//end class
